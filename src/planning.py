@@ -8,7 +8,7 @@ from models import Salle, Reservation
 
 
 class Planning:
-    """Gère l'ensemble des réservations de salles."""
+    """Gère l'ensemble des réservations de salles. """
 
     def __init__(self):
         self.reservations = []
