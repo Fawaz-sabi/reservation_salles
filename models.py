@@ -4,7 +4,7 @@ class Salle:
         self.capacite = capacite
 
     def afficher_infos(self):
-        print("Nom de la salle :", self.nom)
+        print("Nom de la salle  :", self.nom)
         print("Capacité :", self.capacite, "places")
 
 
