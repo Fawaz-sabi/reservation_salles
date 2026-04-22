@@ -6,9 +6,9 @@ Projet : Système de Réservation de Salles
 
 # --- DICTIONNAIRES : Catalogue des salles ---
 salles = {
-    "A101": {"capacite": 30, "equipements": ["projecteur", "tableau"], "disponible": True},
-    "B205": {"capacite": 50, "equipements": ["projecteur", "micro"], "disponible": True},
-    "C010": {"capacite": 10, "equipements": ["tableau"], "disponible": False},
+    "Solidarité R+1": {"capacite": 30, "equipements": ["projecteur", "tableau"], "disponible": True},
+    "Amphie 1000": {"capacite": 50, "equipements": ["projecteur", "micro"], "disponible": True},
+    "Salle 17": {"capacite": 10, "equipements": ["tableau"], "disponible": False},
 }
 
 # --- LISTES : Créneaux horaires possibles ---
@@ -26,7 +26,7 @@ for salle in salles.values():
 reservations = [
     {
         "id": 1,
-        "salle": "A101",
+        "salle": "Solidarité R+1",
         "jour": "Lundi",
         "creneau": "08:00-10:00",
         "utilisateur": "dupont@univ.fr"
@@ -59,4 +59,4 @@ if __name__ == "__main__":
     print("Salles disponibles :", afficher_salles_disponibles(salles))
     print("Salles >= 30 places :", chercher_salle_par_capacite(salles, 30))
     print("Equipements uniques :", tous_equipements)
-    print("Conflit A101/Lundi/08:00 :", detecter_conflit(reservations, "A101", "Lundi", "08:00-10:00"))
+    print("Conflit Solidarité R+1/Lundi/08:00 :", detecter_conflit(reservations, "Solidarité R+1", "Lundi", "08:00-10:00"))
