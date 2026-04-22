@@ -6,7 +6,7 @@ Classes : Salle et Reservation
 
 
 class Salle:
-    """Représente une salle de l'université."""
+    """Représente une salle de l'université de PARAKOU """
 
     def __init__(self, nom: str, capacite: int, equipements: list, disponible: bool = True):
         self.nom = nom

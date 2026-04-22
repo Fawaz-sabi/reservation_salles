@@ -8,9 +8,9 @@ from planning import Planning
 
 # --- Données initiales ---
 salles = {
-    "A101": Salle("A101", 30, ["projecteur", "tableau"]),
-    "B205": Salle("B205", 50, ["projecteur", "micro"]),
-    "C010": Salle("C010", 10, ["tableau"], disponible=False),
+    "Solidarité R+1": Salle("Solidarité R+1", 30, ["projecteur", "tableau"]),
+    "Amphie 1000": Salle("Amphie 1000", 50, ["projecteur", "micro"]),
+    "Salle 17": Salle("Salle 17", 10, ["tableau"], disponible=False),
 }
 
 JOURS_OUVRES = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
