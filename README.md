@@ -37,3 +37,35 @@ python src\data_structures.py
 | `list`    | Créneaux horaires, réservations           |
 | `tuple`   | Jours ouvrés (données immuables)          |
 | `set`     | Équipements uniques disponibles           |
+
+## Bloc 3 — Architecture (POO)
+
+### Classes créées
+
+| Classe | Fichier | Rôle |
+|--------|---------|------|
+| `Salle` | `src/models.py` | Représente une salle de l'université |
+| `Reservation` | `src/models.py` | Représente une réservation de salle |
+| `Planning` | `src/planning.py` | Gère les réservations et détecte les conflits |
+
+### Lancer le menu interactif
+
+```bash
+python main.py
+```
+
+### Fonctionnalités disponibles
+
+- Afficher toutes les salles et leur statut
+- Faire une réservation (choix salle, jour, créneau, email)
+- Détecter automatiquement les conflits horaires
+- Afficher le planning complet des réservations
+
+### Concepts POO appliqués
+
+| Concept | Utilisation |
+|---------|-------------|
+| Encapsulation | Attributs privés gérés via `__init__` |
+| Méthodes | `est_disponible()`, `ajouter_reservation()`, `detecter_conflit()` |
+| `__str__` | Affichage lisible de chaque objet |
+| Composition | `Reservation` contient un objet `Salle` |
