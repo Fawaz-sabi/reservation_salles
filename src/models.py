@@ -3,6 +3,21 @@
 Bloc 3 - Architecture POO
 Classes : Salle et Reservation
 """
+# --- Exceptions personnalisées ---
+class SalleIndisponibleError(Exception):
+    """Levée quand une salle est indisponible."""
+    pass
+
+
+class ConflitReservationError(Exception):
+    """Levée quand un conflit de réservation est détecté."""
+    pass
+
+
+class ReservationIntrouvableError(Exception):
+    """Levée quand une réservation est introuvable."""
+    pass
+
 
 
 class Salle:
