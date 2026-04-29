@@ -38,6 +38,8 @@ python src\data_structures.py
 | `tuple`   | Jours ouvrés (données immuables)          |
 | `set`     | Équipements uniques disponibles           |
 
+---
+
 ## Bloc 3 — Architecture (POO)
 
 ### Classes créées
