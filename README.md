@@ -71,3 +71,46 @@ python main.py
 | Méthodes | `est_disponible()`, `ajouter_reservation()`, `detecter_conflit()` |
 | `__str__` | Affichage lisible de chaque objet |
 | Composition | `Reservation` contient un objet `Salle` |
+
+
+---
+
+## Bloc 4 — Persistance (SQLite)
+
+### Fichier
+- `src/database.py` : gestion de la base de données SQLite
+
+### Fonctionnalités
+- Sauvegarde des salles et réservations dans `reservation.db`
+- Chargement automatique au démarrage
+- Suppression persistante des réservations
+
+---
+
+## Bloc 5 — Qualité (Exceptions + Tests)
+
+### Lancer les tests
+```bash
+python -m pytest tests/ -v
+```
+
+### Résultats
+- 9 tests passés avec succès
+- Exceptions personnalisées : `SalleIndisponibleError`, `ConflitReservationError`, `ReservationIntrouvableError`
+
+---
+
+## Bloc 6 — Interface Graphique (Tkinter)
+
+### Lancer l'interface
+```bash
+python gui.py
+```
+
+### Fonctionnalités
+- Formulaire de réservation (salle, jour, créneau, email)
+- Tableau des réservations avec colonnes
+- Détection automatique des conflits
+- Suppression de réservations
+- Données persistantes via SQLite
+
