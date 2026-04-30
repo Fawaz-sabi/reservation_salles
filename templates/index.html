@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Réservation de Salles — Université de Parakou</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-university"></i></div>
+    <div>
+      <div class="logo-titre">UP</div>
+      <div class="logo-sous">Parakou</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">NAVIGATION</div>
+    <a href="#" class="nav-item active" onclick="afficherPage('dashboard', this)">
+      <i class="fas fa-chart-pie"></i> Dashboard
+    </a>
+    <a href="#" class="nav-item" onclick="afficherPage('reserver', this)">
+      <i class="fas fa-calendar-plus"></i> Réserver
+    </a>
+    <a href="#" class="nav-item" onclick="afficherPage('planning', this)">
+      <i class="fas fa-list-alt"></i> Planning
+    </a>
+  </nav>
+
+  <div class="sidebar-salles">
+    <div class="nav-section">SALLES</div>
+    {% for nom, salle in salles.items() %}
+    <div class="salle-sidebar {% if not salle.est_disponible() %}indispo{% endif %}">
+      <i class="fas fa-door-open"></i>
+      <div>
+        <div class="salle-nom">{{ salle.nom }}</div>
+        <div class="salle-cap">{{ salle.capacite }} places</div>
+      </div>
+      <span class="dot {% if salle.est_disponible() %}vert{% else %}rouge{% endif %}"></span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="sidebar-footer">
+    <i class="fas fa-graduation-cap"></i> Licence 2 Info · 2025/2026
+  </div>
+</aside>
+
+<div class="main-wrapper">
+
+  <header class="topbar">
+    <div class="topbar-titre">
+      <h1>Système de Réservation de Salles</h1>
+      <p>Université de Parakou — Bénin</p>
+    </div>
+    <div class="topbar-info">
+      <i class="fas fa-circle" style="color:#28A745; font-size:0.7rem;"></i>
+      Système en ligne
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ALERTES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alertes">
+          {% for category, message in messages %}
+          <div class="alerte {{ category }}">
+            {% if category == 'success' %}<i class="fas fa-check-circle"></i>
+            {% elif category == 'danger' %}<i class="fas fa-times-circle"></i>
+            {% else %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- PAGE DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <section class="stats-grille">
+        <div class="stat-carte bleu">
+          <div class="stat-icone"><i class="fas fa-calendar-check"></i></div>
+          <div class="stat-info">
+            <div class="stat-valeur">{{ reservations|length }}</div>
+            <div class="stat-label">Réservations</div>
+          </div>
+        </div>
+        <div class="stat-carte vert">
+          <div class="stat-icone"><i class="fas fa-door-open"></i></div>
+          <div class="stat-info">
+            <div class="stat-valeur">{{ salles.values()|selectattr('disponible')|list|length }}</div>
+            <div class="stat-label">Salles disponibles</div>
+          </div>
+        </div>
+        <div class="stat-carte orange">
+          <div class="stat-icone"><i class="fas fa-users"></i></div>
+          <div class="stat-info">
+            <div class="stat-valeur">{{ salles.values()|sum(attribute='capacite') }}</div>
+            <div class="stat-label">Places au total</div>
+          </div>
+        </div>
+        <div class="stat-carte rouge">
+          <div class="stat-icone"><i class="fas fa-ban"></i></div>
+          <div class="stat-info">
+            <div class="stat-valeur">{{ salles.values()|rejectattr('disponible')|list|length }}</div>
+            <div class="stat-label">Salles indisponibles</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Aperçu rapide du planning sur le dashboard -->
+      <div class="carte" style="margin-top: 24px;">
+        <div class="carte-header">
+          <i class="fas fa-clock"></i> Dernières réservations
+          <span class="badge-count">{{ reservations|length }}</span>
+        </div>
+        <div class="carte-body">
+          {% if reservations %}
+          <div class="tableau-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Salle</th><th>Jour</th><th>Créneau</th><th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in reservations[-3:] %}
+                <tr>
+                  <td><span class="id-badge">{{ r.id }}</span></td>
+                  <td><i class="fas fa-door-open" style="color:#003F7D;"></i> {{ r.salle.nom }}</td>
+                  <td>{{ r.jour }}</td>
+                  <td><span class="creneau-badge">{{ r.creneau }}</span></td>
+                  <td>{{ r.utilisateur }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="vide">
+            <i class="fas fa-calendar-times" style="font-size:2rem; color:#ccc;"></i>
+            <p>Aucune réservation enregistrée.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE RÉSERVER -->
+    <div id="page-reserver" class="page">
+      <div class="carte">
+        <div class="carte-header">
+          <i class="fas fa-calendar-plus"></i> Nouvelle Réservation
+        </div>
+        <div class="carte-body" style="max-width: 500px;">
+          <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            Réservation réservée aux emails <strong>@univ-parakou.bj</strong>
+          </div>
+          <form action="/reserver" method="POST">
+            <div class="form-groupe">
+              <label><i class="fas fa-door-open"></i> Salle</label>
+              <select name="salle" required>
+                <option value="">-- Choisir une salle --</option>
+                {% for nom, salle in salles.items() %}
+                  {% if salle.est_disponible() %}
+                  <option value="{{ salle.nom }}">{{ salle.nom }} ({{ salle.capacite }} places)</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              {% for nom, salle in salles.items() %}
+                {% if not salle.est_disponible() %}
+                <div class="salle-bloquee">
+                  <i class="fas fa-ban"></i> {{ salle.nom }} — Non réservable
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="form-groupe">
+              <label><i class="fas fa-calendar-day"></i> Jour</label>
+              <select name="jour" required>
+                <option value="">-- Choisir un jour --</option>
+                {% for jour in jours %}
+                <option value="{{ jour }}">{{ jour }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-groupe">
+              <label><i class="fas fa-clock"></i> Créneau horaire</label>
+              <input
+                type="text"
+                name="creneau"
+                placeholder="ex: 08:00-10:00"
+                pattern="\d{2}:\d{2}-\d{2}:\d{2}"
+                title="Format requis : HH:MM-HH:MM"
+                required
+              />
+              <small class="hint">Format : HH:MM-HH:MM (ex: 08:00-10:00)</small>
+            </div>
+
+            <div class="form-groupe">
+              <label><i class="fas fa-envelope"></i> Email universitaire</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="prenom.nom@univ-parakou.bj"
+                required
+              />
+              <small class="hint">Uniquement les emails @univ-parakou.bj</small>
+            </div>
+
+            <button type="submit" class="btn-reserver">
+              <i class="fas fa-check"></i> Confirmer la réservation
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE PLANNING -->
+    <div id="page-planning" class="page">
+      <div class="carte">
+        <div class="carte-header">
+          <i class="fas fa-list-alt"></i> Planning des Réservations
+          <span class="badge-count">{{ reservations|length }}</span>
+        </div>
+        <div class="carte-body">
+          {% if reservations %}
+          <div class="tableau-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Salle</th><th>Jour</th>
+                  <th>Créneau</th><th>Email</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in reservations %}
+                <tr>
+                  <td><span class="id-badge">{{ r.id }}</span></td>
+                  <td><i class="fas fa-door-open" style="color:#003F7D;"></i> {{ r.salle.nom }}</td>
+                  <td>{{ r.jour }}</td>
+                  <td><span class="creneau-badge">{{ r.creneau }}</span></td>
+                  <td>{{ r.utilisateur }}</td>
+                  <td>
+                    <form action="/supprimer/{{ r.id }}" method="POST" style="display:inline;">
+                      <button type="submit" class="btn-suppr"
+                        onclick="return confirm('Supprimer la réservation #{{ r.id }} ?')">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="vide">
+            <i class="fas fa-calendar-times" style="font-size:2rem; color:#ccc;"></i>
+            <p>Aucune réservation enregistrée.</p>
+            <p>Utilisez le formulaire pour créer votre première réservation.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <i class="fas fa-university"></i>
+    Université de Parakou &nbsp;|&nbsp; Licence 2 Informatique &nbsp;|&nbsp; 2025/2026
+    &nbsp;|&nbsp; SALIFOU Sabi Fawaz &amp; YAHA Sandine
+  </footer>
+
+</div>
+
+<script>
+  function afficherPage(nom, lien) {
+    // Cacher toutes les pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Retirer active de tous les liens
+    document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+    // Afficher la page choisie
+    document.getElementById('page-' + nom).classList.add('active');
+    // Activer le lien cliqué
+    lien.classList.add('active');
+    return false;
+  }
+</script>
+
+</body>
+</html>
