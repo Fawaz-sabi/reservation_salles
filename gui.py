@@ -51,7 +51,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Système de Réservation de Salles — Université de Parakou")
-        self.geometry("800x620")
+        self.geometry("1000x750")
         self.resizable(False, False)
         self.configure(bg=COULEUR_FOND)
         self._build_ui()
@@ -193,7 +193,7 @@ class App(tk.Tk):
             activebackground="#C82333",
             relief="flat", cursor="hand2",
             command=self._supprimer_reservation
-        ).pack(anchor="e", pady=10)
+        ).pack(anchor="e", pady=5, padx=5)
 
         # ── FOOTER ──────────────────────────────────────────
         footer = tk.Frame(self, bg=COULEUR_HEADER, height=30)
